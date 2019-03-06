@@ -1,37 +1,79 @@
-## Welcome to GitHub Pages
+# 工作站验证平台使用
 
-You can use the [editor on GitHub](https://github.com/rolanddddd/rolanddddd.github.io/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
+### 1. UT/IT
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+* rules file： `/02verification_data/dv/cnn25/tests/`
+* cfg file：`/02verification_data/flow/SIM/configs/`
+* txt file: `/home/xdata1/projects/tp1609/cnn25/`
 
-### Markdown
+#### 1. 环境设置
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
-
-```markdown
-Syntax highlighted code block
-
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
+```text
+setwa;
+source sourceme;
+source ./setup/setup.cshrc;
 ```
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+#### 2. 编译cmodel
 
-### Jekyll Themes
+```text
+cd 02verification_data/cmdel/caffe-generator;
+    make clean;
+    make -j32;
+    make py;
+cd ../CaffeSimulator;
+    make clean;
+    make -j32;
+    make py;
+cd ../fxptxt_gen;
+    make clean;
+    make -j32;
+```
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/rolanddddd/rolanddddd.github.io/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+#### 3. 运行命令
 
-### Support or Contact
+1）单条case: `xrun cnn25:eltwise4k.eltwise_instr_001_01 -- +dump` 2）多条case: `xregression -cfg eltwise_200_1grp.rules -max=10 -- +dump` 3）software\_ut: `xregression -cfg -flow software[_4k] -max=10` 4）只编译一次：提前在tests中添加build `spawn.py eltwise4k build/build_4k`;删除build使用`spawn.py eltwise4k -no`
 
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+```text
+xrun cnn25:build [-flow aisc_4k]
+xrun cnn25:eltwise4k.eltwise_instr_001_01 -flow cluster/cluster_4k
+xregression -cfg eltwise_200_1grp -flow cluster/cluster_4k -max=10
+```
+
+* software\_ut如遇到以下错误则为pass
+
+  `Fatal Error: Cycle limit 1000 reached!`
+
+#### 4. 命令参数
+
+* `-flow asic_4k` 执行4k用例
+* `-recomp` 重新执行xrun不用重新打开verdi
+* `-seed=xxxx` 种子
+* `-max=xx`同时提交最多用例
+
+### 2. 覆盖率收集
+
+* 运行覆盖率收集之前更新所有代码，避免版本不同导致无法merge
+* 如果俩次运行之间有RTL代码或验证平台变动，需要删除cov.vdb中所有数据
+
+  ```text
+  xrun cnn25:build -flow coverage[_4k]
+    xrun cnn25:first.smoke_net -flow cov_cluster[_4k]
+    xregression -cfg xx.cfg -flow cov_cluster[_4k] -max=10
+  ```
+
+### 3. 其他
+
+1. 如果回归测试没有产生report则用以下脚本导出
+
+   ```text
+   find . -name "simv.log" | xargs grep -e "^\s*cnn2" > tmp.log
+   sort tmp.log > collect.log
+   ```
+
+2. 查找ERROR或PASS case
+
+   ```text
+   grep "ERROR" layer*/simv.log | grep -v "Cycle limit" | wc
+   ```
+
