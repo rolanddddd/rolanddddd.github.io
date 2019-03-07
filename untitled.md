@@ -40,41 +40,42 @@
    svn st
    ```
 
-7. A新增；C冲突；D删除；G合并；U更新；E存在；R替换
-8. 删除文件
-9. 删除/复制文件夹务必要删除**.svn**文件
+* A新增；C冲突；D删除；G合并；U更新；E存在；R替换
+
+1. 删除文件
+2. 删除/复制文件夹务必要删除**.svn**文件
 
    ```text
    svn delete test.f -m "deletlog" test.f
    或者svn delete test.f / svnci -m "deletlog" test.f
    ```
 
-10. 查看日志
+3. 查看日志
 
-    ```text
-    svn log test.f
-    查看最新5次更新log svn log -l 5
-    ```
+   ```text
+   svn log test.f
+   查看最新5次更新log svn log -l 5
+   ```
 
-11. 查看文件详细信息
+4. 查看文件详细信息
 
-    ```text
-    svn info test.f
-    ```
+   ```text
+   svn info test.f
+   ```
 
-12. 比较差异
+5. 比较差异
 
-    ```text
-    本地与SVN对比  svn diff test.f
-    不同版本对比   svn diff -r 4819:4817 test.f
-    ```
+   ```text
+   本地与SVN对比  svn diff test.f
+   不同版本对比   svn diff -r 4819:4817 test.f
+   ```
 
-13. 帮助
+6. 帮助
 
-    ```text
-    svn help
-    svn help ci
-    ```
+   ```text
+   svn help
+   svn help ci
+   ```
 
 ### 2. 非常用操作
 

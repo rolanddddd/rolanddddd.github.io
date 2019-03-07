@@ -32,7 +32,15 @@ cd ../fxptxt_gen;
 
 #### 3. 运行命令
 
-1）单条case: `xrun cnn25:eltwise4k.eltwise_instr_001_01 -- +dump` 2）多条case: `xregression -cfg eltwise_200_1grp.rules -max=10 -- +dump` 3）software\_ut: `xregression -cfg -flow software[_4k] -max=10` 4）只编译一次：提前在tests中添加build `spawn.py eltwise4k build/build_4k`;删除build使用`spawn.py eltwise4k -no`
+1）单条case: `xrun cnn25:eltwise4k.eltwise_instr_001_01 -- +dump` 
+
+2）多条case: `xregression -cfg eltwise_200_1grp.rules -max=10 -- +dump` 
+
+3）software\_ut: `xregression -cfg -flow software[_4k] -max=10` 
+
+4）只编译一次
+
+提前在tests中添加build `spawn.py eltwise4k build/build_4k`;删除build使用`spawn.py eltwise4k -no`
 
 ```text
 xrun cnn25:build [-flow aisc_4k]
