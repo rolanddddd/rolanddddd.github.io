@@ -8,7 +8,7 @@
 
 #### 1. 环境设置
 
-```text
+```bash
 setwa;
 source sourceme;
 source ./setup/setup.cshrc;
@@ -16,7 +16,7 @@ source ./setup/setup.cshrc;
 
 #### 2. 编译cmodel
 
-```text
+```bash
 cd 02verification_data/cmdel/caffe-generator;
     make clean;
     make -j32;
@@ -74,14 +74,14 @@ xregression -cfg eltwise_200_1grp -flow cluster/cluster_4k -max=10
 
 1. 如果回归测试没有产生report则用以下脚本导出
 
-   ```text
+   ```bash
    find . -name "simv.log" | xargs grep -e "^\s*cnn2" > tmp.log
    sort tmp.log > collect.log
    ```
 
 2. 查找ERROR或PASS case
 
-   ```text
+   ```bash
    grep "ERROR" layer*/simv.log | grep -v "Cycle limit" | wc
    ```
 

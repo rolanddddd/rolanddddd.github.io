@@ -4,7 +4,7 @@
 
 ### 1. 取值范围可变
 
-```text
+```typescript
 wire[7:0] byte = data[select +: 8] (data[select+7 ： select])
 wire[7:0] byte = data[select -: 8] (data[select ： select-7])
 ```
