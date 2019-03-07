@@ -17,19 +17,6 @@
     }
   },
   "output": null,
-  "pdf": {
-    "fontSize": 12,
-    "footerTemplate": null,
-    "headerTemplate": null,
-    "margin": {
-      "bottom": 36,
-      "left": 62,
-      "right": 62,
-      "top": 36
-    },
-    "pageNumbers": false,
-    "paperSize": "a4"
-  },
   "plugins": [
     "-livereload",
     "theme-comscore",
