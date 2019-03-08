@@ -1,4 +1,4 @@
-# 工作站验证平台使用
+# 验证平台使用
 
 ### 1. UT/IT
 
@@ -72,16 +72,25 @@ xregression -cfg eltwise_200_1grp -flow cluster/cluster_4k -max=10
 
 ### 3. 其他
 
-1. 如果回归测试没有产生report则用以下脚本导出
+1.如果回归测试没有产生report则用以下脚本导出
 
-   ```bash
-   find . -name "simv.log" | xargs grep -e "^\s*cnn2" > tmp.log
-   sort tmp.log > collect.log
-   ```
+```bash
+find . -name "simv.log" | xargs grep -e "^\s*cnn2" > tmp.log
+sort tmp.log > collect.log
+```
 
-2. 查找ERROR或PASS case
+2.查找ERROR或PASS case
 
-   ```bash
-   grep "ERROR" layer*/simv.log | grep -v "Cycle limit" | wc
-   ```
+```bash
+grep "ERROR" layer*/simv.log | grep -v "Cycle limit" | wc
+```
+
+ 3.验证平台scoreboar调整错误数值
+
+```bash
+在xxx.rules文件添加
++simv +UVM_MAX_QUIT_COUNT=100
+```
+
+
 
