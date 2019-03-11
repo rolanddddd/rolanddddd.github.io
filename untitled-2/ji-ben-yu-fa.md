@@ -74,3 +74,159 @@ while n < 10:
     print(n)
 ```
 
+### 3.函数
+
+1）return
+
+函数体内部的语句在执行时，一旦执行到`return`时，函数就执行完毕，并将结果返回。因此，函数内部通过条件判断和循环可以实现非常复杂的逻辑。
+
+ 如果没有`return`语句，函数执行完毕后也会返回结果，只是结果为`None`。`return None`可以简写为`return`。
+
+* ​用`from abstest import my_abs`来导入`my_abs()`函数，注意`abstest`是文件名（不含`.py`扩展名）
+
+2）函数参数
+
+在Python中定义函数，可以用`必选参数、默认参数、可变参数、命名关键字参数、关键字参数`
+
+* 默认参数：默认参数必须指向不变对象
+* 命名关键字参数： 命名关键字参数需要一个特殊分隔符`*`，`*`后面的参数被视为命名关键字参数； 如果函数定义中已经有了一个可变参数，后面跟着的命名关键字参数就不再需要一个特殊分隔符`*`
+
+```python
+def person(name, age, *, city, job):  #只接收city和job作为关键字参数
+    print(name, age, city, job)
+def person(name, age, *args, city, job):
+    print(name, age, args, city, job)
+```
+
+```python
+def f1(a, b, c=0, *args, **kw):
+    print('a =', a, 'b =', b, 'c =', c, 'args =', args, 'kw =', kw)
+
+def f2(a, b, c=0, *, d, **kw):
+    print('a =', a, 'b =', b, 'c =', c, 'd =', d, 'kw =', kw)
+    
+>>> f1(1, 2)
+a = 1 b = 2 c = 0 args = () kw = {}
+>>> f1(1, 2, c=3)
+a = 1 b = 2 c = 3 args = () kw = {}
+>>> f1(1, 2, 3, 'a', 'b')
+a = 1 b = 2 c = 3 args = ('a', 'b') kw = {}
+>>> f1(1, 2, 3, 'a', 'b', x=99)
+a = 1 b = 2 c = 3 args = ('a', 'b') kw = {'x': 99}
+>>> f2(1, 2, d=99, ext=None)
+a = 1 b = 2 c = 0 d = 99 kw = {'ext': None}
+
+>>> args = (1, 2, 3, 4)
+>>> kw = {'d': 99, 'x': '#'}
+>>> f1(*args, **kw)
+a = 1 b = 2 c = 3 args = (4,) kw = {'d': 99, 'x': '#'}
+>>> args = (1, 2, 3)
+>>> kw = {'d': 88, 'x': '#'}
+>>> f2(*args, **kw)
+a = 1 b = 2 c = 3 d = 88 kw = {'x': '#'}
+```
+
+{% hint style="info" %}
+`*args`是可变参数，args接收的是一个tuple；
+
+`**kw`是关键字参数，kw接收的是一个dict。
+
+可变参数既可以直接传入：`func(1, 2, 3)`，又可以先组装list或tuple，再通过`*args`传入：`func(*(1, 2, 3))`；
+
+关键字参数既可以直接传入：`func(a=1, b=2)`，又可以先组装dict，再通过`**kw`传入：`func(**{'a': 1, 'b': 2})`
+{% endhint %}
+
+### 4.列表生成器 \| 生成器
+
+```python
+>>> [x * x for x in range(1, 11) if x % 2 == 0]
+[4, 16, 36, 64, 100]
+>>> [m + n for m in 'ABC' for n in 'XYZ']
+['AX', 'AY', 'AZ', 'BX', 'BY', 'BZ', 'CX', 'CY', 'CZ']
+```
+
+一边循环一边计算的机制，称为生成器， 如果要一个一个打印出来，可以通过`next()`函数获得generator的下一个返回值 ，直到计算到最后一个元素，没有更多的元素时，抛出`StopIteration`的错误。
+
+另外一种定义生成器的方法函数中将 `print(b)`改为`yield b`
+
+* 函数是顺序执行，遇到`return`语句或者最后一行函数语句就返回；普通函数返回结果
+* generator的函数，在每次调用`next()`的时候执行，遇到`yield`语句返回，再次执行时从上次返回的`yield`语句处继续执行；生成器函数返回的是generator对象
+
+```python
+>>> L = [x * x for x in range(10)]
+>>> L
+[0, 1, 4, 9, 16, 25, 36, 49, 64, 81]
+>>> g = (x * x for x in range(10))
+>>> next(g)
+0
+>>> next(g)
+1
+>>> next(g)
+4
+
+def fib(max):
+    n, a, b = 0, 0, 1
+    while n < max:
+        yield b
+        a, b = b, a + b
+        n = n + 1
+    return 'done
+```
+
+### 5.迭代器
+
+集合数据类型，如`list`、`tuple`、`dict`、`set`、`str`等；`generator`，包括生成器和带`yield`的generator function。
+
+这些可以直接作用于`for`循环的对象统称为可迭代对象：`Iterable`
+
+ 可以被`next()`函数调用并不断返回下一个值的对象称为迭代器：`Iterator`
+
+## 2.一些代码栗子
+
+### 1.汉诺塔问题
+
+ `move(n, a, b, c)`函数，它接收参数`n`，表示3个柱子A、B、C中第1个柱子A的盘子数量，然后打印出把所有盘子从A借助B移动到C的方法
+
+```python
+# 无论多少个圆块，可以抽象成为同一套思路：就是想办法把(n-1)个a柱上的圆块先移动到b柱，然后把最底部最大的一个圆块移动到c柱，最后把b柱上的(n-1)个圆块移动到c柱
+def hanoi(n, a, buffer, c):
+    if n == 1:
+        print(a, '--->', c) # 定义从a柱移动到c柱的操作
+    else:
+        hanoi(n-1, a, c, buffer) # 把(n-1)个a柱上的圆块移动到缓冲区buffer柱
+        hanoi(1, a, buffer, c) # 把最底部的最大的圆块移动到c柱
+        hanoi(n-1, buffer, a, c) # 把(n-1)个缓冲区buffer柱上的圆块移动到c柱
+
+hanoi(3, 'A', 'B', 'C')
+```
+
+
+
+### 2.杨辉三角
+
+
+
+```text
+          1
+         / \
+        1   1
+       / \ / \
+      1   2   1
+     / \ / \ / \
+    1   3   3   1
+   / \ / \ / \ / \
+  1   4   6   4   1
+ / \ / \ / \ / \ / \
+1   5   10  10  5   1
+```
+
+把每一行看做一个list，试写一个generator，不断输出下一行的list
+
+```python
+def triangles():
+    L = [1]
+    while True:
+        yield L
+        L = [1] + [L[i] + L[i+1] for i in range(len(L)-1)] + [1]
+```
+
